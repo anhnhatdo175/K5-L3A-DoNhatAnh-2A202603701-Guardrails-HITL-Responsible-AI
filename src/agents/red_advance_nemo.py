@@ -37,6 +37,8 @@ from agents.security_boundary import contains_secret, normalize_for_security
 from core.config import (
     DEMO_SECRETS,
     PROVIDER_GEMINI,
+    PROVIDER_GROQ,
+    GROQ_BASE_URL,
     get_red_model,
     get_red_provider,
 )
@@ -237,6 +239,14 @@ def _model_entry(provider: str, model: str) -> dict:
             "api_key_env_var": "GOOGLE_API_KEY",
             "parameters": {"base_url": GEMINI_OPENAI_BASE_URL},
         }
+    if provider == PROVIDER_GROQ:
+        return {
+            "type": "main",
+            "engine": "openai",
+            "model": model,
+            "api_key_env_var": "GROQ_API_KEY",
+            "parameters": {"base_url": GROQ_BASE_URL},
+        }
     return {
         "type": "main",
         "engine": "openai",
@@ -290,7 +300,7 @@ def build_rails_config(
         if "environment variable" in str(exc):
             raise RuntimeError(
                 "NeMo Guardrails của Red Advance cần API key Red trong môi trường "
-                "(OPENAI_API_KEY hoặc GOOGLE_API_KEY). Kiểm tra file .env."
+                "(OPENAI_API_KEY, GOOGLE_API_KEY hoặc GROQ_API_KEY). Kiểm tra file .env."
             ) from exc
         raise
 
